@@ -1,0 +1,63 @@
+<%- include('../../partials/header.ejs') %>
+<%- include('../../partials/navbar.ejs') %>
+<body>
+    <br>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1>Categorias</h1>
+                <a class="btn btn-success" href="/admin/category">
+                    Criar categoria
+                </a>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% categories.forEach(category => { %>
+                            <tr>
+                                <th><%= category.id %></th>
+                                <th><%= category.title %></th>
+                                <th>
+                                    <a class="btn btn-warning" href="/admin/category/<%= category.id %>">Editar</a>
+                                    <button class="btn btn-danger" onclick="deleteCategory('<%= category.id %>')">Excluir</button>
+                                </th>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div> 
+        </div>
+    </div>
+</body>
+<%- include('../../partials/footer.ejs') %>
+
+<script>
+    function deleteCategory(id) {
+      if (confirm('Tem certeza que deseja excluir esta categoria?')) {
+        fetch(`/admin/category/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => {
+          if (response.ok) {
+            location.reload();
+          } else {
+            alert('Erro ao excluir a categoria.');
+          }
+        })
+        .catch(error => {
+          console.error('Erro:', error);
+          alert('Erro ao excluir a categoria.');
+        });
+      }
+    }
+  </script>

@@ -1,0 +1,65 @@
+<%- include('../../partials/header.ejs') %>
+<%- include('../../partials/navbar.ejs') %>
+<body>
+    <br>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1>Artigos</h1>
+                <a class="btn btn-success" href="/admin/article">
+                    Criar artigo
+                </a>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Título</th>
+                            <th>Categoria</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% articles.forEach(article => { %>
+                            <tr>
+                                <th><%= article.id %></th>
+                                <th><%= article.title %></th>
+                                <th><%= article.category.title %></th>
+                                <th>
+                                    <a class="btn btn-warning" href="/admin/article/<%= article.id %>">Editar</a>
+                                    <button class="btn btn-danger" onclick="deleteArticle('<%= article.id %>')">Excluir</button>
+                                </th>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div> 
+        </div>
+    </div>
+</body>
+<%- include('../../partials/footer.ejs') %>
+
+<script>
+    function deleteArticle(id) {
+      if (confirm('Tem certeza que deseja excluir este artigo?')) {
+        fetch(`/admin/article/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => {
+          if (response.ok) {
+            location.reload();
+          } else {
+            alert('Erro ao excluir o artigo.');
+          }
+        })
+        .catch(error => {
+          console.error('Erro:', error);
+          alert('Erro ao excluir o artigo.');
+        });
+      }
+    }
+  </script>
