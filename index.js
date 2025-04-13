@@ -30,9 +30,58 @@ connection
         console.log(error)
     })
 
-app.get("/", (req, resp) => {
-    resp.render("index");
-})
+app.get("/", async (req, res) => {
+    try {
+        const articles = await Article.findAll({
+            include: [{ model: Category }],
+            order: [["id", "DESC"]]
+        });
+    
+        const categories = await Category.findAll();
+            res.render("index", { articles, categories });
+    } catch (error) {
+        console.error(error);
+        res.redirect("/");
+    }
+});
+    
+    
+
+app.get("/:slug", (req, res) => {
+    const slug = req.params.slug;
+    Article.findOne({
+        where: { slug }
+    }).then(article => {
+        if(article != undefined) {
+            Category.findAll().then(categories => {
+                res.render("article", {article, categories})
+            })
+        } else {
+            res.redirect("/");
+        }
+    }).catch(error => {
+        res.redirect("/");
+    });
+});
+
+app.get("/category/:slug", (req, res) => {
+    const slug = req.params.slug;
+    Category.findOne({
+        where: { slug },
+        include: [{ model: Article }]
+    }).then(category => {
+        if(category != undefined) {
+            Category.findAll().then(categories => {
+                res.render("index", {categories, articles: category.articles})
+            })
+        } else {
+            res.redirect("/");
+        }
+    }).catch(error => {
+        console.log(error);
+        res.redirect("/");
+    });
+});
 
 app.use("/", categoriesController);
 app.use("/", articlesController);
