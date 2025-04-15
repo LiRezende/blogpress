@@ -52,4 +52,46 @@ router.delete('/admin/article/:id', async (req, res) => {
     }
 });
 
+router.get('/admin/article/:id', async (req, res) => {
+    const articleId = req.params.id;
+    
+    Article.findByPk(articleId).then(article => {
+        if(article != undefined) {
+            Category.findAll().then(categories => {
+                res.render("admin/articles/edit", { article, categories });
+            })
+        } else {
+            res.redirect("admin/articles/index");
+        }
+    }).catch(error => {
+        console.log(error);
+        res.redirect("admin/articles/index");
+    })
+});
+
+router.put('/admin/article', async (req, res) => {
+    const articleId = req.body.id;
+    const articleTitle = req.body.title;
+    const articleBody = req.body.body;
+    const articleCategoryId = req.body.category;
+  
+    try {
+      await Article.update(
+        { 
+            title: articleTitle,
+            body: articleBody,
+            categoryId: articleCategoryId,
+            slug: slugify(articleTitle.toLowerCase())
+        },
+        { where: { id: articleId } }
+      );
+      res.redirect("/admin/articles");
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+        res.redirect("/admin/articles");
+    }
+});
+  
+
 module.exports = router;
