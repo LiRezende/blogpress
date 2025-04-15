@@ -66,22 +66,29 @@ app.get("/:slug", (req, res) => {
 
 app.get("/category/:slug", (req, res) => {
     const slug = req.params.slug;
+  
     Category.findOne({
-        where: { slug },
-        include: [{ model: Article }]
+      where: { slug },
+      include: [{
+        model: Article,
+        include: [Category]
+      }]
     }).then(category => {
-        if(category != undefined) {
-            Category.findAll().then(categories => {
-                res.render("index", {categories, articles: category.articles})
-            })
-        } else {
-            res.redirect("/");
-        }
-    }).catch(error => {
-        console.log(error);
+      if (category != undefined) {
+        Category.findAll().then(categories => {
+          res.render("index", {
+            categories,
+            articles: category.articles
+          });
+        });
+      } else {
         res.redirect("/");
+      }
+    }).catch(error => {
+      console.log(error);
+      res.redirect("/");
     });
-});
+  });  
 
 app.use("/", categoriesController);
 app.use("/", articlesController);

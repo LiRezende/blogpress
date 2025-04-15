@@ -15,7 +15,7 @@
                 <% articles.forEach(article => { %>
                     <tr>
                         <th><%= article.title %></th>
-                        <th><%= article.category ? article.category.title : "Sem categoria" %></th>
+                        <th><%= article.categoryId ? article.category.title : "Sem categoria" %></th>
                         <th>
                             <a class="btn btn-success" href="/<%= article.slug %>">Ler</a>
                         </th>
