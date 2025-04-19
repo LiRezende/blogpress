@@ -3,8 +3,9 @@ const router = express.Router();
 const Category = require("../categories/Category");
 const Article = require("./Article");
 const slugify = require("slugify");
+const adminAuth = require("../../middlewares/adminAuth");
 
-router.get("/admin/articles", (req, res) => {
+router.get("/admin/articles", adminAuth, (req, res) => {
     Article.findAll({
         include: [{ model: Category }]
     })
@@ -13,13 +14,13 @@ router.get("/admin/articles", (req, res) => {
     });
 });
 
-router.get("/admin/article", (req, res) => {
+router.get("/admin/article", adminAuth, (req, res) => {
     Category.findAll().then(categories => {
         res.render("admin/articles/new", { categories })
     })
 });
 
-router.post("/admin/article", (req, res) => {
+router.post("/admin/article", adminAuth, (req, res) => {
     var title = req.body.title;
     var body = req.body.body;
     var categoryId = req.body.category;
@@ -38,7 +39,7 @@ router.post("/admin/article", (req, res) => {
     }
 });
 
-router.delete('/admin/article/:id', async (req, res) => {
+router.delete('/admin/article/:id', adminAuth, async (req, res) => {
     const articleId = req.params.id;
   
     try {
@@ -52,7 +53,7 @@ router.delete('/admin/article/:id', async (req, res) => {
     }
 });
 
-router.get('/admin/article/:id', async (req, res) => {
+router.get('/admin/article/:id', adminAuth, async (req, res) => {
     const articleId = req.params.id;
     
     Article.findByPk(articleId).then(article => {
@@ -69,7 +70,7 @@ router.get('/admin/article/:id', async (req, res) => {
     })
 });
 
-router.put('/admin/article', async (req, res) => {
+router.put('/admin/article', adminAuth, async (req, res) => {
     const articleId = req.body.id;
     const articleTitle = req.body.title;
     const articleBody = req.body.body;
