@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const session = require("express-session");
 const bodyParser = require("body-parser");
 const methodOverride = require('method-override');
 const connection = require("./database/database");
@@ -9,6 +10,12 @@ const usersController = require("./domain/users/UsersController");
 const Article = require("./domain/articles/Article");
 const Category = require("./domain/categories/Category");
 const User = require("./domain/users/User");
+
+// Sessions
+app.use(session({
+  secret: "alohomorra",
+  cookie: { maxAge: 300000000 }
+}));
 
 // View engine
 app.set("view engine", "ejs");
@@ -48,8 +55,6 @@ app.get("/", async (req, res) => {
     }
 });
     
-    
-
 app.get("/:slug", (req, res) => {
     const slug = req.params.slug;
     Article.findOne({
@@ -91,7 +96,7 @@ app.get("/category/:slug", (req, res) => {
       console.log(error);
       res.redirect("/");
     });
-  });  
+});
 
 app.use("/", categoriesController);
 app.use("/", articlesController);

@@ -45,4 +45,41 @@ router.post("/admin/user", (req, res) => {
     });
 });
 
+router.get("/admin/login", (req, res) => {
+    console.log(req),
+    res.render("admin/users/login");
+});
+
+router.post("/authenticate", (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    User.findOne({ where: { email: email } }).then(user => {
+        if(user != undefined) {
+            const validPassword = bcrypt.compareSync(password, user.password);
+            if(validPassword) {
+                req.session.loggedUser = {
+                    id: user.id,
+                    email: user.email
+                }
+                res.redirect("/admin/articles");
+            } else {
+                return res.send(`
+                    <script>
+                      alert('Email ou senha inválido(a)!');
+                      window.location.href = '/admin/login';
+                    </script>
+                `);
+            }
+        } else {
+            res.redirect("/admin/login");
+        }
+    })
+});
+
+router.get("/admin/logout", (req, res) => {
+    req.session.loggedUser = undefined;
+    res.redirect("/");
+})
+
 module.exports = router;
