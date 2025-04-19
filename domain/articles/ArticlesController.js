@@ -92,6 +92,47 @@ router.put('/admin/article', async (req, res) => {
         res.redirect("/admin/articles");
     }
 });
-  
 
+router.get('/articles/:num', (req, res) => {
+    const page = parseInt(req.params.num);
+    const limit = 10;
+    let offset = 0;
+
+    if (isNaN(page) || page < 1) {
+        return res.status(400).json({ error: "Página inválida" });
+    }
+
+    offset = (page - 1) * limit;
+
+    Article.findAndCountAll({
+        limit: limit,
+        offset: offset,
+        order: [["id", "DESC"]],
+        include: [{
+            model: Category
+        }]
+    }).then(articles => {
+        let next;
+        
+        if(offset + limit >= articles.count) {
+            next = false;
+        } else {
+            next = true;
+        }
+
+        let result = {
+            page: parseInt(page),
+            next: next,
+            articles: articles
+        }
+        
+        Category.findAll().then(categories => {
+            res.render("admin/articles/page", {result, categories} )
+        });
+    }).catch(err => {
+        console.error(err);
+        res.status(500).json({ error: "Erro ao buscar artigos" });
+    });
+});
+  
 module.exports = router;

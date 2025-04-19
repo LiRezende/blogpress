@@ -5,8 +5,10 @@ const methodOverride = require('method-override');
 const connection = require("./database/database");
 const categoriesController = require("./domain/categories/CategoriesController");
 const articlesController = require("./domain/articles/ArticlesController");
+const usersController = require("./domain/users/UsersController");
 const Article = require("./domain/articles/Article");
 const Category = require("./domain/categories/Category");
+const User = require("./domain/users/User");
 
 // View engine
 app.set("view engine", "ejs");
@@ -34,7 +36,8 @@ app.get("/", async (req, res) => {
     try {
         const articles = await Article.findAll({
             include: [{ model: Category }],
-            order: [["id", "DESC"]]
+            order: [["id", "DESC"]],
+            limit: 5
         });
     
         const categories = await Category.findAll();
@@ -92,6 +95,7 @@ app.get("/category/:slug", (req, res) => {
 
 app.use("/", categoriesController);
 app.use("/", articlesController);
+app.use("/", usersController);
 
 app.listen(8080, () => {
     console.log("Server running!");
