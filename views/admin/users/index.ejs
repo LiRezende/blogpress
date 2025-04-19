@@ -1,0 +1,39 @@
+<%- include('../../partials/header.ejs') %>
+<%- include('../../partials/navbar.ejs') %>
+<body>
+    <br>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1>Usuários</h1>
+                <a class="btn btn-success" href="/admin/user">
+                    Criar usuário
+                </a>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% users.forEach(user => { %>
+                            <tr>
+                                <th><%= user.id %></th>
+                                <th><%= user.name %></th>
+                                <th>
+                                    <a class="btn btn-warning" href="#">Editar</a>
+                                    <button class="btn btn-danger" onclick="deleteCategory('#')">Excluir</button>
+                                </th>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div> 
+        </div>
+    </div>
+</body>
+<%- include('../../partials/footer.ejs') %>
