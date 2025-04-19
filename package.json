@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/LiRezende/blogpress#readme",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
